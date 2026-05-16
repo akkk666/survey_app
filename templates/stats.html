@@ -1,0 +1,284 @@
+<!DOCT<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>统计数据 | 感情状况调查</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f4f7fb;
+            font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 2rem 1.5rem;
+            color: #1e2a3e;
+        }
+
+        .stats-container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 650;
+            background: linear-gradient(135deg, #1e2a3e, #3a5a78);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-sub {
+            color: #5c6f87;
+            margin-bottom: 2rem;
+            border-left: 4px solid #ff9f4a;
+            padding-left: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.4rem 1.5rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.02), 0 2px 6px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .stat-card h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid #ffefe2;
+            padding-bottom: 0.6rem;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .stat-label {
+            font-weight: 500;
+        }
+
+        .stat-number {
+            font-weight: 700;
+            background: #f8fafc;
+            padding: 0.2rem 0.7rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar-bg {
+            background: #e9edf2;
+            border-radius: 20px;
+            height: 10px;
+            width: 100%;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: #ff9f4a;
+            width: 0%;
+            height: 100%;
+            border-radius: 20px;
+        }
+
+        .insight-text {
+            font-size: 0.85rem;
+            color: #2c6e6e;
+            background: #eefbfb;
+            padding: 0.4rem 0.8rem;
+            border-radius: 60px;
+            display: inline-block;
+            margin-top: 0.8rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 1.2rem;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        th, td {
+            padding: 0.9rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        th {
+            background: #f8fafd;
+            font-weight: 600;
+            color: #2d4a6e;
+        }
+
+        .recent-section {
+            margin-top: 2rem;
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.2rem 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+
+        .recent-section h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            background: #1e2a3e;
+            color: white;
+            text-decoration: none;
+            padding: 0.6rem 1.4rem;
+            border-radius: 60px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .back-link:hover {
+            background: #ff9f4a;
+            color: #1e2a3e;
+        }
+
+        @media (max-width: 700px) {
+            body { padding: 1.2rem; }
+            th, td { padding: 0.6rem; font-size: 0.85rem; }
+            .stat-card { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="stats-container">
+    <h1>📈 感情数据看板</h1>
+    <div class="header-sub">实时匿名统计 · 看看大家的感情状况分布</div>
+
+    <div class="stats-grid">
+        <!-- 总览卡片 -->
+        <div class="stat-card">
+            <h2>📊 总参与人数</h2>
+            <div style="font-size: 2.5rem; font-weight: 700; margin: 0.5rem 0;">{{ total }}</div>
+            <div class="progress-bar-bg"><div class="progress-fill" style="width: 100%; background:#d9e2ef;"></div></div>
+            <div class="insight-text">✨ 感谢每一位真诚的参与者</div>
+        </div>
+
+        <!-- 性别分布卡片 -->
+        <div class="stat-card">
+            <h2>👥 性别比例</h2>
+            {% for item in gender_counts %}
+            <div class="stat-row">
+                <span class="stat-label">{{ item['gender'] }}</span>
+                <span class="stat-number">{{ item['count'] }} 人 · {{ "%.1f"|format(item['count'] / total * 100 if total>0 else 0) }}%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-fill" style="width: {{ item['count'] / total * 100 if total>0 else 0 }}%; background:#ff9f4a;"></div>
+            </div>
+            {% else %}
+            <div class="stat-row">暂无数据</div>
+            {% endfor %}
+        </div>
+
+        <!-- 整体单身状况卡片 -->
+        <div class="stat-card">
+            <h2>💘 整体感情状况</h2>
+            {% for item in single_counts %}
+            <div class="stat-row">
+                <span class="stat-label">{{ item['is_single'] }}</span>
+                <span class="stat-number">{{ item['count'] }} 人 · {{ "%.1f"|format(item['count'] / total * 100 if total>0 else 0) }}%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-fill" style="width: {{ item['count'] / total * 100 if total>0 else 0 }}%; background: {{ '#e67e22' if item['is_single']=='单身' else '#2cba8c' }};"></div>
+            </div>
+            {% else %}
+            <div class="stat-row">暂无数据</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 交叉分析：各性别单身比例 -->
+    <div class="stat-card" style="margin-bottom: 1.8rem;">
+        <h2>🔍 分性别单身率分析</h2>
+        <div style="overflow-x: auto;">
+            <table style="min-width: 260px;">
+                <thead>
+                <tr><th>性别</th><th>单身人数</th><th>总人数</th><th>单身率</th></tr>
+                </thead>
+                <tbody>
+                {% for item in gender_ratio %}
+                <tr>
+                    <td><strong>{{ item.gender }}</strong></td>
+                    <td>{{ item.single_count }}</td>
+                    <td>{{ item.total }}</td>
+                    <td>
+                        <span style="font-weight: 700;">{{ item.ratio }}%</span>
+                        <div class="progress-bar-bg" style="width: 80px; display: inline-block; margin-left: 8px;">
+                            <div class="progress-fill" style="width: {{ item.ratio }}%; background:#e67e22;"></div>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">暂无数据，等待首次提交</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="insight-text" style="margin-top: 12px;">📌 单身率 = 该性别单身人数 / 该性别总人数</div>
+    </div>
+
+    <!-- 原始数据区域 -->
+    {% if show_raw %}
+    <div class="recent-section">
+        <h2>📋 最近提交记录 (原始数据 - 仅管理员可见)</h2>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr><th>性别</th><th>感情状态</th><th>提交时间</th></tr>
+                </thead>
+                <tbody>
+                    {% for row in recent %}
+                    <tr>
+                        <td>{{ row['gender'] }}</td>
+                        <td>{{ row['is_single'] }}</td>
+                        <td>{{ row['created_at'] }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3">暂无记录</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div style="font-size: 0.75rem; color: #7c8b9c; margin-top: 0.8rem;">只展示最近10条，保护隐私但便于核对</div>
+    </div>
+    {% else %}
+    <div class="recent-section">
+        <h2>📋 原始数据</h2>
+        <p style="color: #7c8b9c; padding: 1rem 0;">🔒 原始提交记录仅管理员可见。</p>
+    </div>
+    {% endif %}
+
+    <a href="/" class="back-link">← 返回填写问卷</a>
+</div>
+</body>
+</html>

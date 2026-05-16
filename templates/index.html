@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>感情状况小调查</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f6f9fc 0%, #f0f4f8 100%);
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .container {
+            max-width: 550px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(0px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.02);
+            padding: 2rem 1.8rem;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #1e2a3e, #2c3e50);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.3rem;
+            letter-spacing: -0.3px;
+        }
+
+        .sub {
+            color: #5a6874;
+            font-size: 0.9rem;
+            border-left: 3px solid #ff9f4a;
+            padding-left: 0.75rem;
+            margin-bottom: 1.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .question {
+            margin-bottom: 2rem;
+        }
+
+        .question-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #1e2a3e;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            background: #ffe5d0;
+            color: #c26b1a;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.65rem;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .option {
+            flex: 1 0 auto;
+            min-width: 100px;
+        }
+
+        .option input {
+            display: none;
+        }
+
+        .option label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f2f5f9;
+            border-radius: 60px;
+            padding: 0.8rem 0.5rem;
+            font-weight: 500;
+            color: #2c3e50;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+            font-size: 1rem;
+            gap: 0.5rem;
+        }
+
+        .option input:checked + label {
+            background: #2c3e50;
+            border-color: #2c3e50;
+            color: white;
+            box-shadow: 0 6px 12px -8px rgba(44,62,80,0.4);
+        }
+
+        .option label:hover {
+            background: #e9edf2;
+            transform: translateY(-1px);
+        }
+
+        button {
+            background: #ff9f4a;
+            border: none;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #2c1a0c;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.8rem;
+            box-shadow: 0 6px 14px rgba(255, 159, 74, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 6px rgba(255, 159, 74, 0.3);
+        }
+
+        .status-msg {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #27ae60;
+            font-weight: 500;
+            min-height: 2.5rem;
+        }
+
+        .stats-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #5a6874;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .stats-link:hover {
+            color: #ff9f4a;
+        }
+
+        hr {
+            margin: 1.5rem 0 0.5rem;
+            border: none;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 1.5rem;
+            }
+            .option label {
+                padding: 0.65rem 0.3rem;
+                font-size: 0.9rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h1>💗 感情状况小调查</h1>
+        <div class="sub">匿名统计 · 真诚作答即可</div>
+
+        <div class="question">
+            <div class="question-title">
+                <span>❶</span> 您的性别是？
+                <span class="badge">必选</span>
+            </div>
+            <div class="options" id="genderGroup">
+                <div class="option">
+                    <input type="radio" name="gender" id="genderMale" value="男">
+                    <label for="genderMale">🙋‍♂️ 男</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="gender" id="genderFemale" value="女">
+                    <label for="genderFemale">🙋‍♀️ 女</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="gender" id="genderOther" value="其他">
+                    <label for="genderOther">🌈 其他</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-title">
+                <span>❷</span> 您目前单身吗？
+                <span class="badge">必选</span>
+            </div>
+            <div class="options" id="singleGroup">
+                <div class="option">
+                    <input type="radio" name="single" id="singleYes" value="单身">
+                    <label for="singleYes">💔 单身</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="single" id="singleNo" value="非单身">
+                    <label for="singleNo">💞 非单身</label>
+                </div>
+            </div>
+        </div>
+
+        <button id="submitBtn">✨ 提交问卷 ✨</button>
+        <div id="statusMsg" class="status-msg"></div>
+        <hr>
+        <a href="/stats" class="stats-link" target="_blank">📊 查看统计报告 & 原始数据 →</a>
+    </div>
+</div>
+
+<script>
+    const submitBtn = document.getElementById('submitBtn');
+    const statusMsg = document.getElementById('statusMsg');
+
+    async function submitSurvey() {
+        const genderRadios = document.querySelectorAll('input[name="gender"]');
+        let selectedGender = null;
+        for (let radio of genderRadios) {
+            if (radio.checked) {
+                selectedGender = radio.value;
+                break;
+            }
+        }
+
+        const singleRadios = document.querySelectorAll('input[name="single"]');
+        let selectedSingle = null;
+        for (let radio of singleRadios) {
+            if (radio.checked) {
+                selectedSingle = radio.value;
+                break;
+            }
+        }
+
+        if (!selectedGender) {
+            statusMsg.style.color = "#e67e22";
+            statusMsg.innerText = "⚠️ 请先选择您的性别";
+            return;
+        }
+        if (!selectedSingle) {
+            statusMsg.style.color = "#e67e22";
+            statusMsg.innerText = "⚠️ 请选择感情状况";
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = "0.7";
+        statusMsg.style.color = "#2c3e50";
+        statusMsg.innerText = "提交中...";
+
+        try {
+            const response = await fetch('/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    gender: selectedGender,
+                    is_single: selectedSingle
+                })
+            });
+            const result = await response.json();
+            if (result.success) {
+                statusMsg.style.color = "#27ae60";
+                statusMsg.innerText = "✓ 提交成功！感谢参与 💐";
+                document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+                setTimeout(() => {
+                    if(statusMsg.innerText.includes("成功")){
+                        statusMsg.innerText = "";
+                    }
+                }, 2500);
+            } else {
+                statusMsg.style.color = "#c0392b";
+                statusMsg.innerText = "❌ 提交失败: " + (result.error || "未知错误");
+            }
+        } catch (err) {
+            statusMsg.style.color = "#c0392b";
+            statusMsg.innerText = "网络错误，请稍后重试";
+            console.error(err);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = "1";
+        }
+    }
+
+    submitBtn.addEventListener('click', submitSurvey);
+</script>
+</body>
+</html>
